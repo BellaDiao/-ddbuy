@@ -1,0 +1,43 @@
+{
+	"success": true,
+	"code": 0,
+	"msg": "success",
+	"data": {
+		"big_recommend": {
+			"name": "客官，今天想吃点什么？",
+			"show_type": 1,
+			"_id": "5d9542094ed5bd1c6b8c4e33",
+			"is_more": false,
+			"list": [{
+				"id": "5b23789c3f6f40a0730041f5",
+				"name": "蚝油栗子鸡",
+				"image": "http:\/\/ddimg.ddxq.mobi\/18bd340c1184c1529904256166.jpg?width=600&height=450",
+				"width": "600",
+				"height": "450",
+				"food_desc": "板栗 、鸡腿 、青椒 、蚝油 、生抽 、料酒 、生姜 、香葱 、八角 、花椒粒 、冰糖 ",
+				"time_consuming": "",
+				"author_name": "玉池桃红",
+				"author_id": "5b20c597846c2e993b8c0933",
+				"is_shelf": 1,
+				"is_vod": false,
+				"author_avatar": "https:\/\/img.ddimg.mobi\/recipe\/4b6c4ff3761bf1528874302007.jpg",
+				"is_system_recommend": 1
+			}, {
+				"id": "5b4726f6c0a1ea95158b494f",
+				"name": "豉椒鸡丁",
+				"image": "http:\/\/ddimg.ddxq.mobi\/d61b4e0fff2e1e0453e0d5637b826d6e.jpg?width=450&height=677",
+				"width": "450",
+				"height": "677",
+				"food_desc": "鸡胸肉 、青椒 、生姜 、蒜头 、洋葱片 、干辣椒 、料酒 、生抽 、胡椒粉 、淀粉 、芝麻油 、豆豉酱 、蚝油 、白砂糖 ",
+				"time_consuming": "20分钟",
+				"author_name": "烟火间",
+				"author_id": "5b47254306752e52378c8b01",
+				"is_shelf": 1,
+				"is_vod": false,
+				"author_avatar": "https:\/\/img.ddimg.mobi\/recipe\/60125b4b42a681531389233500.png",
+				"is_system_recommend": 1
+			}]
+		}
+	},
+	"server_time": 1570115804
+}

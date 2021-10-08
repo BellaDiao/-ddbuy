@@ -1,0 +1,7 @@
+{
+  success_code: 200,
+  message: '验证码获取成功',
+  "data": {
+    code: '@integer(000000, 999999)'
+  }
+}
