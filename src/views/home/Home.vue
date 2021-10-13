@@ -27,6 +27,7 @@
           />
         </van-popup>
       </div>
+
       <div style="flex: 4">
         <van-cell
           title="选择日期范围"
@@ -41,13 +42,10 @@
           @confirm="onConfirm"
           :show-confirm="false"
         />
+        >
       </div>
     </div>
     <div class="mainContent1" style="display: flex">
-      <!-- <van-cell-group inset>
-        <van-cell title="总计划" value="1000" />
-      </van-cell-group> -->
-      <!-- <div style="width:10px"></div> -->
       <div style="flex: 2" class="groove">
         <div class="zjh">总计划</div>
         <div class="number">122</div>
@@ -72,24 +70,40 @@
     </div>
     <div class="bottomContent">
       <div class="littleT">员工计划完成情况</div>
-      <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="xh" label="序号" width="50"> </el-table-column>
-        <el-table-column prop="dept" label="部门" width="100">
-        </el-table-column>
-        <el-table-column prop="psn" label="责任人/分配人" width="70">
-        </el-table-column>
-        <el-table-column prop="finish" label="已完成" width="50">
-        </el-table-column>
-        <el-table-column prop="unfinish" label="未完成" width="50">
-        </el-table-column>
-        <el-table-column prop="finishR" label="完成率" width="50">
-        </el-table-column>
-      </el-table>
+      <div class="hello">
+        <el-table
+          :data="
+            tableData.slice(
+              (currentPage - 1) * pageSize,
+              currentPage * pageSize
+            )
+          "
+          tooltip-effect="dark"
+          style="width: 100%"
+        >
+          <el-table-column prop="xh" label="序号" width="35"> </el-table-column>
+          <el-table-column prop="dept" label="部门" width="100">
+          </el-table-column>
+          <el-table-column prop="psn" label="责任人/分配人" width="70">
+          </el-table-column>
+          <el-table-column prop="finish" label="已完成" width="50">
+          </el-table-column>
+          <el-table-column prop="unfinish" label="未完成" width="50">
+          </el-table-column>
+          <el-table-column prop="finishR" label="完成率" width="80" sortable>
+          </el-table-column>
+        </el-table>
+
+        <el-pagination
+          :page-size="pageSize"
+          :current-page="currentPage"
+          @current-change="handleCurrentChang"
+          layout="prev, pager, next, total"
+          :total="tableData.length"
+        >
+        </el-pagination>
+      </div>
     </div>
-    <!-- 数据加载提示gif -->
-    <!-- <Loading :show="isShowLoading" /> -->
-    <!-- 回到顶部按钮 -->
-    <!-- <v-top /> -->
   </div>
 </template>
 
@@ -117,8 +131,10 @@ Vue.use(Popup);
 
 Vue.use(Calendar);
 Vue.use(ElementUI);
+const optionsItem = ['50', '100'];
 
 export default {
+
   computed: {
     ...mapState(['userInfo']),
   },
@@ -133,6 +149,7 @@ export default {
   },
   data () {
     return {
+
       date: '',//时间范围
       show: false,//时间范围控件是否显示
       qukshow: false,//快捷时间查询弹框是否显示
@@ -145,7 +162,6 @@ export default {
           140000: '当年',
         }
       },
-      // radio: '1',
       finishNum: 95,
       unfinishNum: 5,
       totalhNum: 100,
@@ -157,68 +173,286 @@ export default {
         unfinish: 12,
         finishR: "12%",
       }, {
-        xh: '1',
+        xh: '2',
         dept: '上海市普陀区',
         psn: '王小虎',
         finish: 12,
         unfinish: 12,
-        finishR: "12%",
+        finishR: "1%",
 
       }, {
-        xh: '1',
+        xh: '3',
         dept: '上海市普陀区',
         psn: '王小虎',
         finish: 12,
         unfinish: 12,
-        finishR: "12%",
+        finishR: "42%",
       }, {
-        xh: '1',
+        xh: '4',
         dept: '上海市普陀区',
         psn: '王小虎',
         finish: 12,
         unfinish: 12,
-        finishR: "12%",
+        finishR: "33%",
       }, {
-        xh: '1',
+        xh: '5',
         dept: '上海市普陀区',
         psn: '王小虎',
         finish: 12,
         unfinish: 12,
-        finishR: "12%",
+        finishR: "42%",
 
       }, {
-        xh: '1',
+        xh: '6',
         dept: '上海市普陀区',
         psn: '王小虎',
         finish: 12,
         unfinish: 12,
-        finishR: "12%",
+        finishR: "42%",
 
       }, {
-        xh: '1',
+        xh: '7',
         dept: '上海市普陀区',
         psn: '王小虎',
         finish: 12,
         unfinish: 12,
-        finishR: "12%",
+        finishR: "28%",
 
       }, {
-        xh: '1',
+        xh: '8',
         dept: '上海市普陀区',
         psn: '王小虎',
         finish: 12,
         unfinish: 12,
-        finishR: "12%",
+        finishR: "26%",
 
       }, {
-        xh: '1',
+        xh: '9',
         dept: '上海市普陀区',
         psn: '王小虎',
         finish: 12,
         unfinish: 12,
-        finishR: "12%",
+        finishR: "93%",
+      }, {
+        xh: '10',
+        dept: '信息中心',
+        psn: '王小虎',
+        finish: 12,
+        unfinish: 12,
+        finishR: "62%",
+      }, {
+        xh: '12',
+        dept: '上海市普陀区',
+        psn: '王小虎',
+        finish: 12,
+        unfinish: 12,
+        finishR: "41%",
 
-      },]
+      }, {
+        xh: '13',
+        dept: '上海市普陀区',
+        psn: '王小虎',
+        finish: 12,
+        unfinish: 12,
+        finishR: "48%",
+      }, {
+        xh: '14',
+        dept: '上海市普陀区',
+        psn: '王小虎',
+        finish: 12,
+        unfinish: 12,
+        finishR: "33%",
+      }, {
+        xh: '15',
+        dept: '上海市普陀区',
+        psn: '王小虎',
+        finish: 12,
+        unfinish: 12,
+        finishR: "82%",
+
+      }, {
+        xh: '16',
+        dept: '上海市普陀区',
+        psn: '王小虎',
+        finish: 12,
+        unfinish: 12,
+        finishR: "32%",
+
+      }, {
+        xh: '17',
+        dept: '上海市普陀区',
+        psn: '王小虎',
+        finish: 12,
+        unfinish: 12,
+        finishR: "78%",
+
+      }, {
+        xh: '18',
+        dept: '上海市普陀区',
+        psn: '王小虎',
+        finish: 12,
+        unfinish: 12,
+        finishR: "19%",
+
+      }, {
+        xh: '19',
+        dept: '上海市普陀区',
+        psn: '王小虎',
+        finish: 12,
+        unfinish: 12,
+        finishR: "73%",
+      },],
+      mulPage: true,//分页
+      currentPage: 1,
+      pageSize: 6,
+
+      // dt: {
+      //   finishNum: 95,//完成数量
+      //   unfinishNum: 5,//未完成数量
+      //   totalhNum: 100,//总计划数量
+      //   tableData: [{
+      //     xh: '1',
+      //     dept: '信息中心',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "12%",
+      //   }, {
+      //     xh: '2',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "1%",
+
+      //   }, {
+      //     xh: '3',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "42%",
+      //   }, {
+      //     xh: '4',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "33%",
+      //   }, {
+      //     xh: '5',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "42%",
+
+      //   }, {
+      //     xh: '6',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "42%",
+
+      //   }, {
+      //     xh: '7',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "28%",
+
+      //   }, {
+      //     xh: '8',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "26%",
+
+      //   }, {
+      //     xh: '9',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "93%",
+      //   }, {
+      //     xh: '10',
+      //     dept: '信息中心',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "62%",
+      //   }, {
+      //     xh: '12',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "41%",
+
+      //   }, {
+      //     xh: '13',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "48%",
+      //   }, {
+      //     xh: '14',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "33%",
+      //   }, {
+      //     xh: '15',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "82%",
+
+      //   }, {
+      //     xh: '16',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "32%",
+
+      //   }, {
+      //     xh: '17',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "78%",
+
+      //   }, {
+      //     xh: '18',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "19%",
+
+      //   }, {
+      //     xh: '19',
+      //     dept: '上海市普陀区',
+      //     psn: '王小虎',
+      //     finish: 12,
+      //     unfinish: 12,
+      //     finishR: "73%",
+      //   },],
+      //   barData: {
+      //     xData: ["有效载荷系统室", "有效载荷专业室"],
+      //     yData1: [320, 302],
+      //     yData2: [20, 32],
+      //   },
+      // }
     }
   },
   // components: {
@@ -233,6 +467,7 @@ export default {
   //   Loading,
   // },
   methods: {
+
     // Vuex中的方法
     ...mapMutations(['ADD_GOODS', 'ADD_TO_CART']),
     // 数据初始化
@@ -240,9 +475,6 @@ export default {
       this.date = this.getTodayTime();//默认查询至今
 
 
-      // 
-      // 
-      // 
       // const response = await getHomeData();
       const response = getHomeData;
       if (response.success) {
@@ -265,6 +497,15 @@ export default {
         // this.home_ad = data.home_ad.image_url;
       }
     },
+
+    // ******
+
+    // 分页
+    handleCurrentChang (currentPage) {
+      this.currentPage = currentPage
+    },
+
+    // *****
     // 快捷时间查询开始
     showPopup () {
       this.qukshow = true;
@@ -297,8 +538,7 @@ export default {
       }
       this.qukshow = false//关闭弹框
     },
-    getDayTime () {
-      //获取当日
+    getDayTime () {      //获取当日
       let date = new Date;
       let y = date.getFullYear()
       let m = date.getMonth() + 1
@@ -307,8 +547,7 @@ export default {
       d = d < 10 ? ('0' + d) : d
       return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
     },
-    getMonthTime () {
-      //获取当月
+    getMonthTime () {      //获取当月
       let date = new Date;
       let y = date.getFullYear()
       let m = date.getMonth() + 1
@@ -317,8 +556,7 @@ export default {
       d = d < 10 ? ('0' + d) : d
       return `${date.getFullYear()}/${date.getMonth() + 1}`;
     },
-    getYearTime () {
-      //获取当年
+    getYearTime () {      //获取当年
       let date = new Date;
       let y = date.getFullYear()
       let m = date.getMonth() + 1
@@ -327,8 +565,7 @@ export default {
       d = d < 10 ? ('0' + d) : d
       return `${date.getFullYear()}-${date.getFullYear()}`;
     },
-    getTodayTime () {
-      //获取至今
+    getTodayTime () {      //获取至今
       let date = new Date;
       let y = date.getFullYear()
       let m = date.getMonth() + 1
@@ -340,7 +577,7 @@ export default {
 
     onCancel1 () {//取消选中
       this.show = false
-      this.$refs.myArea.reset()// 重置城市列表
+      this.$refs.myArea.reset()// 重置列表
     },
     // 
     timeFun (val) {
@@ -354,10 +591,10 @@ export default {
       const [start, end] = date;
       this.show = false;
       this.date = `${this.formatDate(start)} - ${this.formatDate(end)}`;
-      this.carmodel='查询';
+      this.carmodel = '查询';
       console.log("this.date", this.date)
     },
-    finishChart () {
+    finishChart () {    // 完成数量图
       var that = this;
       let value = that.finishNum;
       let maxValue = that.totalhNum;
@@ -450,7 +687,7 @@ export default {
         pipe.resize();
       });
     },
-    unfinishChart () {
+    unfinishChart () {// 未完成数量图
       var that = this;
       let value = that.unfinishNum;
       let maxValue = that.totalhNum;
@@ -543,7 +780,7 @@ export default {
         pipe.resize();
       });
     },
-    barChart () {
+    barChart () { // 柱状图
       let barChart = echarts.init(this.$refs.barChart);
 
       let option = {
