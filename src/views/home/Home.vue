@@ -122,7 +122,7 @@ import * as echarts from 'echarts';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
-import { getHomeData } from './../../serve/api/index.js'
+import { getHomeData } from './../../serve/api/home.js'
 
 Vue.use(Cell);
 Vue.use(CellGroup);
@@ -305,154 +305,6 @@ export default {
       mulPage: true,//分页
       currentPage: 1,
       pageSize: 6,
-
-      // dt: {
-      //   finishNum: 95,//完成数量
-      //   unfinishNum: 5,//未完成数量
-      //   totalhNum: 100,//总计划数量
-      //   tableData: [{
-      //     xh: '1',
-      //     dept: '信息中心',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "12%",
-      //   }, {
-      //     xh: '2',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "1%",
-
-      //   }, {
-      //     xh: '3',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "42%",
-      //   }, {
-      //     xh: '4',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "33%",
-      //   }, {
-      //     xh: '5',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "42%",
-
-      //   }, {
-      //     xh: '6',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "42%",
-
-      //   }, {
-      //     xh: '7',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "28%",
-
-      //   }, {
-      //     xh: '8',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "26%",
-
-      //   }, {
-      //     xh: '9',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "93%",
-      //   }, {
-      //     xh: '10',
-      //     dept: '信息中心',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "62%",
-      //   }, {
-      //     xh: '12',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "41%",
-
-      //   }, {
-      //     xh: '13',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "48%",
-      //   }, {
-      //     xh: '14',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "33%",
-      //   }, {
-      //     xh: '15',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "82%",
-
-      //   }, {
-      //     xh: '16',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "32%",
-
-      //   }, {
-      //     xh: '17',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "78%",
-
-      //   }, {
-      //     xh: '18',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "19%",
-
-      //   }, {
-      //     xh: '19',
-      //     dept: '上海市普陀区',
-      //     psn: '王小虎',
-      //     finish: 12,
-      //     unfinish: 12,
-      //     finishR: "73%",
-      //   },],
-      //   barData: {
-      //     xData: ["有效载荷系统室", "有效载荷专业室"],
-      //     yData1: [320, 302],
-      //     yData2: [20, 32],
-      //   },
-      // }
     }
   },
   // components: {
@@ -473,29 +325,16 @@ export default {
     // 数据初始化
     async _initData () {
       this.date = this.getTodayTime();//默认查询至今
+      debugger
+      
 
+      //  const response = getHomeData;
+      // if (response.success) {
+      //   const data = response.data
+      //   // 时间列表赋值
+      //   this.areaList = data.areaList;
 
-      // const response = await getHomeData();
-      const response = getHomeData;
-      if (response.success) {
-        const data = response.data
-        // 时间列表赋值
-        this.areaList = data.areaList;
-
-        // // 给轮播组件 sowing_list赋值
-        // this.sowing_list = data.list[0].icon_list;
-        // // navList 赋值
-        // this.nav_list = data.list[2].icon_list;
-        // // 给限时抢购赋值
-        // this.flash_sale_product_list = data.list[3].product_list;
-        // // 给Tabbar 商品列表赋值
-        // this.tabbar_all_product_list = data.list[12].product_list;
-        // this.isShowLoading = false
-        // // 给特色专区赋值
-        // this.specialZone = data.special_zone;
-        // // 获取首页广告图
-        // this.home_ad = data.home_ad.image_url;
-      }
+      // }
     },
 
     // ******

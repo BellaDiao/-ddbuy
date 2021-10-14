@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 export default function ajax(url = '', params = {}, type = 'GET') {
+  debugger
     // 1. 变量
     let promise;
     // 2. 返回一个promise对象
