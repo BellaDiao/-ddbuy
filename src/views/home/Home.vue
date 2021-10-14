@@ -48,7 +48,7 @@
     <div class="mainContent1" style="display: flex">
       <div style="flex: 2" class="groove">
         <div class="zjh">总计划</div>
-        <div class="number">122</div>
+        <div class="number">{{ totalhNum }}</div>
       </div>
 
       <div style="flex: 2.5">
@@ -81,10 +81,15 @@
           tooltip-effect="dark"
           style="width: 100%"
         >
-          <el-table-column prop="xh" label="序号" width="35"> </el-table-column>
+          <el-table-column type="index" width="50" label="序号" align="center">
+            <template slot-scope="scope">
+              <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
+            </template>
+          </el-table-column>
+
           <el-table-column prop="dept" label="部门" width="100">
           </el-table-column>
-          <el-table-column prop="psn" label="责任人/分配人" width="70">
+          <el-table-column prop="psn" label="责任人/分配人" width="65">
           </el-table-column>
           <el-table-column prop="finish" label="已完成" width="50">
           </el-table-column>
@@ -123,6 +128,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 import { getHomeData } from './../../serve/api/home.js'
+import axios from 'axios'
 
 Vue.use(Cell);
 Vue.use(CellGroup);
@@ -138,22 +144,33 @@ export default {
   computed: {
     ...mapState(['userInfo']),
   },
+  // beforeCreate () {
+  //   axios
+  //     .post('http://localhost:3001/home')
+  //     .then(response => {
+  //       console.log("beforeCreate:",response.data)
+  //       this.tableData = response.data
+  //     })
+  // },
   created () {
     // 0.数据初始化
-    this._initData();
+    this.date = this.getTodayTime();//默认查询至今
+    this.initData();
   },
   mounted () {
-    this.finishChart();
-    this.unfinishChart();
-    this.barChart();
+    this.$nextTick(function () {
+
+    })
   },
   data () {
     return {
-
       date: '',//时间范围
       show: false,//时间范围控件是否显示
       qukshow: false,//快捷时间查询弹框是否显示
       carmodel: '至今',
+      searchType: '',
+      beginDate: '',
+      endDate: '',
       areaList: {
         province_list: {
           110000: '至今',
@@ -162,149 +179,155 @@ export default {
           140000: '当年',
         }
       },
-      finishNum: 95,
-      unfinishNum: 5,
-      totalhNum: 100,
-      tableData: [{
-        xh: '1',
-        dept: '信息中心',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "12%",
-      }, {
-        xh: '2',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "1%",
+      finishNum: '',
+      unfinishNum: '',
+      totalhNum: '',
+      tableData: '',
+      // tableData: [{
+      //   xh: '1',
+      //   dept: '信息中心',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "12%",
+      // }, {
+      //   xh: '2',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "1%",
 
-      }, {
-        xh: '3',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "42%",
-      }, {
-        xh: '4',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "33%",
-      }, {
-        xh: '5',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "42%",
+      // }, {
+      //   xh: '3',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "42%",
+      // }, {
+      //   xh: '4',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "33%",
+      // }, {
+      //   xh: '5',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "42%",
 
-      }, {
-        xh: '6',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "42%",
+      // }, {
+      //   xh: '6',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "42%",
 
-      }, {
-        xh: '7',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "28%",
+      // }, {
+      //   xh: '7',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "28%",
 
-      }, {
-        xh: '8',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "26%",
+      // }, {
+      //   xh: '8',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "26%",
 
-      }, {
-        xh: '9',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "93%",
-      }, {
-        xh: '10',
-        dept: '信息中心',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "62%",
-      }, {
-        xh: '12',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "41%",
+      // }, {
+      //   xh: '9',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "93%",
+      // }, {
+      //   xh: '10',
+      //   dept: '信息中心',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "62%",
+      // }, {
+      //   xh: '12',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "41%",
 
-      }, {
-        xh: '13',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "48%",
-      }, {
-        xh: '14',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "33%",
-      }, {
-        xh: '15',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "82%",
+      // }, {
+      //   xh: '13',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "48%",
+      // }, {
+      //   xh: '14',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "33%",
+      // }, {
+      //   xh: '15',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "82%",
 
-      }, {
-        xh: '16',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "32%",
+      // }, {
+      //   xh: '16',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "32%",
 
-      }, {
-        xh: '17',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "78%",
+      // }, {
+      //   xh: '17',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "78%",
 
-      }, {
-        xh: '18',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "19%",
+      // }, {
+      //   xh: '18',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "19%",
 
-      }, {
-        xh: '19',
-        dept: '上海市普陀区',
-        psn: '王小虎',
-        finish: 12,
-        unfinish: 12,
-        finishR: "73%",
-      },],
+      // }, {
+      //   xh: '19',
+      //   dept: '上海市普陀区',
+      //   psn: '王小虎',
+      //   finish: 12,
+      //   unfinish: 12,
+      //   finishR: "73%",
+      // },],
       mulPage: true,//分页
       currentPage: 1,
       pageSize: 6,
+      barData: {
+        xData: '',
+        yData1: '',
+        yData2: '',
+      },
     }
   },
   // components: {
@@ -323,22 +346,44 @@ export default {
     // Vuex中的方法
     ...mapMutations(['ADD_GOODS', 'ADD_TO_CART']),
     // 数据初始化
-    async _initData () {
-      this.date = this.getTodayTime();//默认查询至今
-      debugger
-      
+    initData () {
 
-      //  const response = getHomeData;
-      // if (response.success) {
-      //   const data = response.data
-      //   // 时间列表赋值
-      //   this.areaList = data.areaList;
+      /**
+       * 请求数据
+       * */
+      let params = {
+        searchType: this.searchType,
+        beginDate: this.beginDate,
+        endDate: this.endDate,
+      }
 
-      // }
+      console.log("params:", params)
+      axios
+        .post('http://localhost:3001/homeNum')
+        .then(response => {
+          let dataT = response.data.data
+          this.tableData = dataT.tableData
+          // console.log("this.tableData", this.tableData)
+          this.finishNum = dataT.finishNum
+          this.unfinishNum = dataT.unfinishNum
+          this.totalhNum = dataT.totalhNum
+          this.barData.xData = dataT.barData.xData
+          this.barData.yData1 = dataT.barData.yData1
+          this.barData.yData2 = dataT.barData.yData2
+
+          this.finishChart();
+          this.unfinishChart();
+          this.barChart();
+
+        })
     },
 
-    // ******
 
+    // ******
+    //获取表格序号
+    getIndex ($index) {
+      return (this.currentPage - 1) * this.pageSize + $index + 1
+    },
     // 分页
     handleCurrentChang (currentPage) {
       this.currentPage = currentPage
@@ -351,27 +396,36 @@ export default {
     },
 
     onConfirm1 (val) { //确定选择
-      console.log(val[0].name)
+      // console.log(val[0].name)
       this.carmodel = val[0].name;
 
       switch (this.carmodel) {
         case '至今':
           this.date = this.getTodayTime();
+          this.searchType = 'annual';
+
           console.log("至今:", this.date);
+          this.initData();
           break;
         case '当月':
           this.date = this.getMonthTime();
-          console.log("当月:", this.date);
+          this.searchType = 'nowMonth';
 
+          console.log("当月:", this.date);
+          this.initData();
           break;
         case '当日':
           this.date = this.getDayTime();
+          this.searchType = 'nowDay';
+
           console.log("当日:", this.date);
+          this.initData();
           break;
         case '当年':
           this.date = this.getYearTime();
+          this.searchType = 'nowYear';
           console.log("当年:", this.date);
-
+          this.initData();
           break;
 
       }
@@ -384,7 +438,7 @@ export default {
       m = m < 10 ? '0' + m : m
       let d = date.getDate()
       d = d < 10 ? ('0' + d) : d
-      return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
     getMonthTime () {      //获取当月
       let date = new Date;
@@ -393,7 +447,7 @@ export default {
       m = m < 10 ? '0' + m : m
       let d = date.getDate()
       d = d < 10 ? ('0' + d) : d
-      return `${date.getFullYear()}/${date.getMonth() + 1}`;
+      return `${date.getFullYear()}-${date.getMonth() + 1}`;
     },
     getYearTime () {      //获取当年
       let date = new Date;
@@ -402,7 +456,8 @@ export default {
       m = m < 10 ? '0' + m : m
       let d = date.getDate()
       d = d < 10 ? ('0' + d) : d
-      return `${date.getFullYear()}-${date.getFullYear()}`;
+      // return `${date.getFullYear()}-${date.getFullYear()}`;
+      return `${date.getFullYear()}`;
     },
     getTodayTime () {      //获取至今
       let date = new Date;
@@ -411,7 +466,9 @@ export default {
       m = m < 10 ? '0' + m : m
       let d = date.getDate()
       d = d < 10 ? ('0' + d) : d
-      return `${date.getFullYear()}/1/1-${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+      // return `${date.getFullYear()}/1/1-${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+      return `初始日期-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
     },
 
     onCancel1 () {//取消选中
@@ -424,19 +481,25 @@ export default {
     },
     // 日期控件开始
     formatDate (date) {
-      return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
     onConfirm (date) {
       const [start, end] = date;
       this.show = false;
-      this.date = `${this.formatDate(start)} - ${this.formatDate(end)}`;
+      this.date = `${this.formatDate(start)}~${this.formatDate(end)}`;
       this.carmodel = '查询';
-      console.log("this.date", this.date)
+      this.searchType = 'annual';
+      this.beginDate = this.formatDate(start)
+      this.endDate = this.formatDate(end)
+
+      this.initData();
     },
     finishChart () {    // 完成数量图
       var that = this;
+
       let value = that.finishNum;
       let maxValue = that.totalhNum;
+
       let pipe = echarts.init(this.$refs.finishChart);
       let option = {
         title: {
@@ -638,7 +701,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['有效载荷系统室', '有效载荷专业室']
+          data: this.barData.xData
         },
         yAxis: {
           type: 'value',
@@ -655,7 +718,7 @@ export default {
             emphasis: {
               focus: 'series'
             },
-            data: [320, 302]
+            data: this.barData.yData1
           },
           {
             name: '未完成',
@@ -667,7 +730,7 @@ export default {
             emphasis: {
               focus: 'series'
             },
-            data: [120, 210]
+            data: this.barData.yData2
           },
 
         ]
@@ -682,7 +745,7 @@ export default {
 <style lang="less" scoped>
 html * {
   font-size: 8px;
-  outline: 1px solid red;
+  // outline: 1px solid red;
 }
 #home {
   background-color: '#f5f5f5';

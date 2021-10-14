@@ -1,0 +1,46 @@
+移动宝项目看板接口需求：
+
+请求参数：
+	searchType-查询类型		nowYear|nowMonth|nowDay|annual|autoRule
+	beginDate-自定义开始日期
+	endDate-自定义结束日期
+	示例：
+		nowYear:查询时间是 当年：2021	
+		nowMonth:查询时间是 当月：2021/10
+		nowDay:查询时间是 当日：2021/10/14
+		annual:查询时间是 至今：2021/1/1-2021/10/14
+		autoRule:是自定义查询：
+			beginDate和endDate必填  
+			beginDate：2021/9/2  - endDate：2021/9/20
+请求方式：
+	post请求
+返回数据：
+	"data": {
+		  finishNum: 195,// 完成数量
+		  unfinishNum: 15,// 未完成数量
+		  totalhNum: 1100,//总数
+		  barData: {// 柱状图数据
+			xData: ["有效载荷系统室", "有效载荷专业室"],// 横坐标数据
+			yData1: [30, 32],// 横坐标的已完成数据
+			yData2: [20, 32],// 横坐标的未已完成数据
+		  },
+		  tableData: [{//表格数据
+ 			dept: '信息中心',//部门
+			psn: '及房间',//责任人
+			finish: 12,//已完成数
+			unfinish: 12,//未完成数
+			finishR: "12%",//完成率
+		  }, {
+ 			dept: '信息中心',
+			psn: '王息虎',
+			finish: 12,
+			unfinish: 12,
+			finishR: "1%",
+		  }, {
+ 			dept: '信息中心',
+			psn: '父小虎',
+			finish: 12,
+			unfinish: 12,
+			finishR: "42%",     
+		  },],
+		}
