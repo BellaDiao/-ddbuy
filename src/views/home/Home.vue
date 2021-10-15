@@ -130,6 +130,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 import { getHomeData } from './../../serve/api/home.js'
 import axios from 'axios'
 
+import qs from 'qs'
+
 Vue.use(Cell);
 Vue.use(CellGroup);
 Vue.use(Area);
@@ -351,33 +353,57 @@ export default {
       /**
        * 请求数据
        * */
-      let params = {
-        searchType: this.searchType,
-        beginDate: this.beginDate,
-        endDate: this.endDate,
-      }
 
-      console.log("params:", params)
-      axios
-        .post('http://localhost:3001/homeNum')
-        .then(response => {
-          let dataT = response.data.data
-          this.tableData = dataT.tableData
-          // console.log("this.tableData", this.tableData)
-          this.finishNum = dataT.finishNum
-          this.unfinishNum = dataT.unfinishNum
-          this.totalhNum = dataT.totalhNum
-          this.barData.xData = dataT.barData.xData
-          this.barData.yData1 = dataT.barData.yData1
-          this.barData.yData2 = dataT.barData.yData2
+      // axios
+      //   .post('http://localhost:3001/homeNum')
 
-          this.finishChart();
-          this.unfinishChart();
-          this.barChart();
+      //   .then(response => {
+      //     let dataT = response.data.data
+      //     this.tableData = dataT.tableData
+      //      this.finishNum = dataT.finishNum
+      //     this.unfinishNum = dataT.unfinishNum
+      //     this.totalhNum = dataT.totalhNum
+      //     this.barData.xData = dataT.barData.xData
+      //     this.barData.yData1 = dataT.barData.yData1
+      //     this.barData.yData2 = dataT.barData.yData2
+      //     this.finishChart();
+      //     this.unfinishChart();
+      //     this.barChart();
 
-        })
+      //   })
+      // 
+
+
+      // axios.post('/bpm/portal/r/w',{
+      //     searchType: 'nowYear',
+      //     beginDate: '2021-01-01',
+      //     endDate: '2021-10-14',
+      //     sid: '3fec0ea5-db8b-432f-a0cd-c1123038adef',
+      //     cmd: 'com.awspaas.user.apps.project.dynamics.getReportInfo'
+      //   },
+      //   {contentType: 'application/json',}
+      // ).then(response => {
+      //   console.log("shuju:", response)
+
+      // })
+
+      axios.post('/bpm/portal/r/w?sid=3fec0ea5-db8b-432f-a0cd-c1123038adef&cmd=com.awspaas.user.apps.project.dynamics.getReportInfo&searchType=nowYear&beginDate=2021-01-01&endDate=2021-10-14',
+      ).then(response => {
+
+        let dataT = response.data.data
+        this.tableData = dataT.tableData
+        this.finishNum = dataT.finishNum
+        this.unfinishNum = dataT.unfinishNum
+        this.totalhNum = dataT.totalhNum
+        this.barData.xData = dataT.barData.xData
+        this.barData.yData1 = dataT.barData.yData1
+        this.barData.yData2 = dataT.barData.yData2
+        this.finishChart();
+        this.unfinishChart();
+        this.barChart();
+
+      })
     },
-
 
     // ******
     //获取表格序号
