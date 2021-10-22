@@ -41,6 +41,8 @@
           type="range"
           @confirm="onConfirm"
           :show-confirm="false"
+          :min-date="minDate"
+          :max-date="maxDate"
         />
         >
       </div>
@@ -157,6 +159,7 @@ export default {
   created () {
     // 0.数据初始化
     this.date = this.getTodayTime();//默认查询至今
+    console.log(this.date)
     this.initData();
   },
   mounted () {
@@ -185,143 +188,6 @@ export default {
       unfinishNum: '',
       totalhNum: '',
       tableData: '',
-      // tableData: [{
-      //   xh: '1',
-      //   dept: '信息中心',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "12%",
-      // }, {
-      //   xh: '2',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "1%",
-
-      // }, {
-      //   xh: '3',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "42%",
-      // }, {
-      //   xh: '4',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "33%",
-      // }, {
-      //   xh: '5',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "42%",
-
-      // }, {
-      //   xh: '6',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "42%",
-
-      // }, {
-      //   xh: '7',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "28%",
-
-      // }, {
-      //   xh: '8',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "26%",
-
-      // }, {
-      //   xh: '9',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "93%",
-      // }, {
-      //   xh: '10',
-      //   dept: '信息中心',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "62%",
-      // }, {
-      //   xh: '12',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "41%",
-
-      // }, {
-      //   xh: '13',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "48%",
-      // }, {
-      //   xh: '14',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "33%",
-      // }, {
-      //   xh: '15',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "82%",
-
-      // }, {
-      //   xh: '16',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "32%",
-
-      // }, {
-      //   xh: '17',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "78%",
-
-      // }, {
-      //   xh: '18',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "19%",
-
-      // }, {
-      //   xh: '19',
-      //   dept: '上海市普陀区',
-      //   psn: '王小虎',
-      //   finish: 12,
-      //   unfinish: 12,
-      //   finishR: "73%",
-      // },],
       mulPage: true,//分页
       currentPage: 1,
       pageSize: 6,
@@ -330,6 +196,10 @@ export default {
         yData1: '',
         yData2: '',
       },
+      cmd: 'com.awspaas.user.apps.project.dynamics.getReportInfo',
+      minDate: new Date(new Date().setFullYear(new Date().getFullYear() - 2)),
+      maxDate: new Date(new Date().setFullYear(new Date().getFullYear() + 2))
+
     }
   },
   // components: {
@@ -369,10 +239,8 @@ export default {
       //     this.finishChart();
       //     this.unfinishChart();
       //     this.barChart();
-
       //   })
       // 
-
 
       // axios.post('/bpm/portal/r/w',{
       //     searchType: 'nowYear',
@@ -387,9 +255,12 @@ export default {
 
       // })
 
-      axios.post('/bpm/portal/r/w?sid=3fec0ea5-db8b-432f-a0cd-c1123038adef&cmd=com.awspaas.user.apps.project.dynamics.getReportInfo&searchType=nowYear&beginDate=2021-01-01&endDate=2021-10-14',
-      ).then(response => {
+      // axios.post('/bpm/portal/r/w?sid=sid&cmd=com.awspaas.user.apps.project.dynamics.getReportInfo&searchType=nowYear&beginDate=2021-01-01&endDate=2021-10-14',
 
+      // 获取sid
+      var sid = this.$route.query.sid;
+      axios.post('https://sast.awspaas.com/portal/r/w?sid=' + sid + '&cmd=' + this.cmd + '&searchType=' + this.searchType + '&beginDate=' + this.beginDate + '&endDate=' + this.endDate,
+      ).then(response => {
         let dataT = response.data.data
         this.tableData = dataT.tableData
         this.finishNum = dataT.finishNum
