@@ -27,4 +27,5 @@ window.onload = function () {
 #dashboard .active_tab{
   display: none!important;
 }
+
 </style>

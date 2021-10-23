@@ -221,4 +221,10 @@ export default {
 .moveToCart {
   animation: mymove 0.5s ease-in-out;
 }
+
+// 
+.el-table th.el-table__cell {
+  font-size: 1.5rem !important;
+  background-color: #c7e6f1 !important;
+}
 </style>

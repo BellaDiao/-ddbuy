@@ -28,7 +28,7 @@
         </van-popup>
       </div>
 
-      <div style="flex: 4">
+      <div style="flex: 6">
         <van-cell
           title="选择日期范围"
           :value="date"
@@ -81,7 +81,9 @@
             )
           "
           tooltip-effect="dark"
-          style="width: 100%"
+          style="width: 100%; padding: 4px 0"
+          :row-style="{ height: '0' }"
+          :cell-style="{ padding: '0' }"
         >
           <el-table-column type="index" width="50" label="序号" align="center">
             <template slot-scope="scope">
@@ -97,7 +99,7 @@
           </el-table-column>
           <el-table-column prop="unfinish" label="未完成" width="50">
           </el-table-column>
-          <el-table-column prop="finishR" label="完成率" width="80" sortable>
+          <el-table-column prop="finishR" label="完成率" width="82" sortable>
           </el-table-column>
         </el-table>
 
@@ -159,7 +161,7 @@ export default {
   created () {
     // 0.数据初始化
     this.date = this.getTodayTime();//默认查询至今
-    console.log(this.date)
+    // console.log(this.date, this.searchType)
     this.initData();
   },
   mounted () {
@@ -169,6 +171,7 @@ export default {
   },
   data () {
     return {
+      data: '',
       date: '',//时间范围
       show: false,//时间范围控件是否显示
       qukshow: false,//快捷时间查询弹框是否显示
@@ -190,7 +193,7 @@ export default {
       tableData: '',
       mulPage: true,//分页
       currentPage: 1,
-      pageSize: 6,
+      pageSize:10,
       barData: {
         xData: '',
         yData1: '',
@@ -223,14 +226,14 @@ export default {
       /**
        * 请求数据
        * */
-
+      // 请求本地假数据：
       // axios
       //   .post('http://localhost:3001/homeNum')
 
       //   .then(response => {
       //     let dataT = response.data.data
       //     this.tableData = dataT.tableData
-      //      this.finishNum = dataT.finishNum
+      //     this.finishNum = dataT.finishNum
       //     this.unfinishNum = dataT.unfinishNum
       //     this.totalhNum = dataT.totalhNum
       //     this.barData.xData = dataT.barData.xData
@@ -240,7 +243,7 @@ export default {
       //     this.unfinishChart();
       //     this.barChart();
       //   })
-      // 
+      
 
       // axios.post('/bpm/portal/r/w',{
       //     searchType: 'nowYear',
@@ -255,10 +258,10 @@ export default {
 
       // })
 
-      // axios.post('/bpm/portal/r/w?sid=sid&cmd=com.awspaas.user.apps.project.dynamics.getReportInfo&searchType=nowYear&beginDate=2021-01-01&endDate=2021-10-14',
+      //  正式代码：
+      
+      var sid = this.$route.query.sid;// 获取sid
 
-      // 获取sid
-      var sid = this.$route.query.sid;
       axios.post('https://sast.awspaas.com/portal/r/w?sid=' + sid + '&cmd=' + this.cmd + '&searchType=' + this.searchType + '&beginDate=' + this.beginDate + '&endDate=' + this.endDate,
       ).then(response => {
         let dataT = response.data.data
@@ -272,8 +275,8 @@ export default {
         this.finishChart();
         this.unfinishChart();
         this.barChart();
-
       })
+
     },
 
     // ******
@@ -299,36 +302,29 @@ export default {
       switch (this.carmodel) {
         case '至今':
           this.date = this.getTodayTime();
-          this.searchType = 'annual';
-
-          console.log("至今:", this.date);
+          // console.log("至今:", this.date);
           this.initData();
           break;
         case '当月':
           this.date = this.getMonthTime();
-          this.searchType = 'nowMonth';
-
-          console.log("当月:", this.date);
+          // console.log("当月:", this.date);
           this.initData();
           break;
         case '当日':
           this.date = this.getDayTime();
-          this.searchType = 'nowDay';
-
-          console.log("当日:", this.date);
+          // console.log("当日:", this.date);
           this.initData();
           break;
         case '当年':
           this.date = this.getYearTime();
-          this.searchType = 'nowYear';
-          console.log("当年:", this.date);
+          // console.log("当年:", this.date);
           this.initData();
           break;
-
       }
       this.qukshow = false//关闭弹框
     },
     getDayTime () {      //获取当日
+      this.searchType = 'nowDay';
       let date = new Date;
       let y = date.getFullYear()
       let m = date.getMonth() + 1
@@ -338,6 +334,7 @@ export default {
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
     getMonthTime () {      //获取当月
+      this.searchType = 'nowMonth';
       let date = new Date;
       let y = date.getFullYear()
       let m = date.getMonth() + 1
@@ -347,6 +344,7 @@ export default {
       return `${date.getFullYear()}-${date.getMonth() + 1}`;
     },
     getYearTime () {      //获取当年
+      this.searchType = 'nowYear';
       let date = new Date;
       let y = date.getFullYear()
       let m = date.getMonth() + 1
@@ -357,6 +355,7 @@ export default {
       return `${date.getFullYear()}`;
     },
     getTodayTime () {      //获取至今
+      this.searchType = 'annual';
       let date = new Date;
       let y = date.getFullYear()
       let m = date.getMonth() + 1
@@ -385,7 +384,7 @@ export default {
       this.show = false;
       this.date = `${this.formatDate(start)}~${this.formatDate(end)}`;
       this.carmodel = '查询';
-      this.searchType = 'annual';
+      this.searchType = 'autoRule';
       this.beginDate = this.formatDate(start)
       this.endDate = this.formatDate(end)
 
@@ -641,12 +640,13 @@ export default {
 
 <style lang="less" scoped>
 html * {
-  font-size: 8px;
-  // outline: 1px solid red;
+  outline: 1px solid red;
+    font-size: 12px;
+
 }
 #home {
   background-color: '#f5f5f5';
-  padding-bottom: 3rem;
+  // padding-bottom: 3rem;
 
   .head {
     margin-top: -3rem;
@@ -654,17 +654,18 @@ html * {
     background-image: url('http://518taole.7-orange.cn/backImage.png');
   }
 }
-.van-divider {
-  background-color: #f5f5f5;
-  margin: 0;
-}
+
+// .van-divider {
+//   background-color: #f5f5f5;
+//   margin: 0;
+// }
 //
-.top-wrapper {
-  width: 100%;
-  height: 200px;
-  background-color: rgb(17, 142, 234);
-  padding-top: 10px;
-}
+// .top-wrapper {
+//   width: 100%;
+//   height: 200px;
+//   background-color: rgb(17, 142, 234);
+//   padding-top: 10px;
+// }
 
 .groove {
   border-style: groove;
@@ -685,9 +686,14 @@ html * {
 .bottomContent {
   height: 8rem;
 }
-.el-table .el-table__cell {
-  padding: 4px 0 !important;
-}
+// .el-table .el-table__cell {
+//   // 间距
+//   padding-top: 4px !important;
+//   padding-bottom: 4px !important;
+// }
+thead{
+ background-color: red !important;
+ }
 .van-cell {
   padding: 5px 3px !important;
 }
@@ -698,8 +704,9 @@ html * {
   font-size: 24px !important;
 }
 .littleT {
+  margin-top:3px;
   text-align: center;
-  font-size: 16px !important;
+  font-size: 13px !important;
 }
 .el-table th.el-table__cell > .cell {
   padding-left: 0px !important;
@@ -708,7 +715,18 @@ html * {
 .van-cell__value {
   text-align: left !important;
 }
-// .timing{
+.el-table th.el-table__cell {
+  font-size: 1.5rem !important;
+  background-color: #c7e6f1 !important;
+}
+.el-table .cell {
+  line-height: 16px !important;
+}
+.el-table th.el-table__cell>.cell{
+    padding-left: 0px !important;
+}
 
+// .van-cell__title{
+//   width: 100px  !important;
 // }
 </style>
