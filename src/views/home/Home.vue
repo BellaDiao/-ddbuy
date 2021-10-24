@@ -44,25 +44,30 @@
           :min-date="minDate"
           :max-date="maxDate"
         />
-        >
       </div>
     </div>
     <div class="mainContent1" style="display: flex">
       <div style="flex: 2" class="groove">
-        <div class="zjh">总计划</div>
+        <div class="zjh">总数</div>
         <div class="number">{{ totalhNum }}</div>
       </div>
 
       <div style="flex: 2.5">
-        <div style="float: left">
+        <div style="float: left" class="groove">
           <div class="littleT">已完成</div>
-          <div ref="finishChart" style="width: 120px; height: 120px"></div>
+          <div
+            ref="finishChart"
+            style="width: 120px; height: 120px; margin-left: 16px"
+          ></div>
         </div>
       </div>
       <div style="flex: 2.5">
-        <div style="float: left">
+        <div style="float: left" class="groove">
           <div class="littleT">未完成</div>
-          <div ref="unfinishChart" style="width: 120px; height: 120px"></div>
+          <div
+            ref="unfinishChart"
+            style="width: 120px; height: 120px; margin-left: 16px"
+          ></div>
         </div>
       </div>
     </div>
@@ -71,7 +76,12 @@
       <div ref="barChart" style="height: 150px"></div>
     </div>
     <div class="bottomContent">
-      <div class="littleT">员工计划完成情况</div>
+      <van-divider
+        :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }"
+      >
+        <span style="font-size: 16px; font-weight: 300">员工计划完成情况</span>
+      </van-divider>
+      <!-- <div class="littleT"></div> -->
       <div class="hello">
         <el-table
           :data="
@@ -85,7 +95,7 @@
           :row-style="{ height: '0' }"
           :cell-style="{ padding: '0' }"
         >
-          <el-table-column type="index" width="50" label="序号" align="center">
+          <el-table-column type="index" width="40" label="序号" align="center">
             <template slot-scope="scope">
               <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
             </template>
@@ -131,10 +141,8 @@ import * as echarts from 'echarts';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
-import { getHomeData } from './../../serve/api/home.js'
 import axios from 'axios'
 
-import qs from 'qs'
 
 Vue.use(Cell);
 Vue.use(CellGroup);
@@ -150,18 +158,10 @@ export default {
   computed: {
     ...mapState(['userInfo']),
   },
-  // beforeCreate () {
-  //   axios
-  //     .post('http://localhost:3001/home')
-  //     .then(response => {
-  //       console.log("beforeCreate:",response.data)
-  //       this.tableData = response.data
-  //     })
-  // },
+
   created () {
     // 0.数据初始化
     this.date = this.getTodayTime();//默认查询至今
-    // console.log(this.date, this.searchType)
     this.initData();
   },
   mounted () {
@@ -193,7 +193,7 @@ export default {
       tableData: '',
       mulPage: true,//分页
       currentPage: 1,
-      pageSize:10,
+      pageSize: 10,
       barData: {
         xData: '',
         yData1: '',
@@ -243,7 +243,7 @@ export default {
       //     this.unfinishChart();
       //     this.barChart();
       //   })
-      
+
 
       // axios.post('/bpm/portal/r/w',{
       //     searchType: 'nowYear',
@@ -259,7 +259,7 @@ export default {
       // })
 
       //  正式代码：
-      
+
       var sid = this.$route.query.sid;// 获取sid
 
       axios.post('https://sast.awspaas.com/portal/r/w?sid=' + sid + '&cmd=' + this.cmd + '&searchType=' + this.searchType + '&beginDate=' + this.beginDate + '&endDate=' + this.endDate,
@@ -302,12 +302,10 @@ export default {
       switch (this.carmodel) {
         case '至今':
           this.date = this.getTodayTime();
-          // console.log("至今:", this.date);
           this.initData();
           break;
         case '当月':
           this.date = this.getMonthTime();
-          // console.log("当月:", this.date);
           this.initData();
           break;
         case '当日':
@@ -317,7 +315,6 @@ export default {
           break;
         case '当年':
           this.date = this.getYearTime();
-          // console.log("当年:", this.date);
           this.initData();
           break;
       }
@@ -411,32 +408,18 @@ export default {
         //环形中间文字
         graphic: [
           //第一行文字
-          //内容 + 位置
           {
             type: 'text',
             left: 'center',
             top: '48%',
             style: {
-              //value当前进度
               text: '' + value + '个',
               textAlign: 'center',
               fill: '#000',
               fontSize: 20
             }
           },
-          //第二行文字
-          //内容 + 位置
-          // {
-          //   type: 'text',
-          //   left: 'center',
-          //   top: '55%',
-          //   style: {
-          //      text: '共' + maxValue + '个',
-          //     textAlign: 'center',
-          //     fill: '#999',
-          //     fontSize: 24
-          //   }
-          // }
+
         ],
         series: [{
           type: 'pie',
@@ -454,7 +437,7 @@ export default {
           itemStyle: {
             normal: {
               shadowBlur: 200,
-              shadowColor: 'rgba(44, 196, 196, 0.8)'
+              shadowColor: '#e4f4f4'
             }
           },
           data: [
@@ -503,8 +486,7 @@ export default {
         },
         //环形中间文字
         graphic: [
-          //第一行文字
-          //内容 + 位置
+
           {
             type: 'text',
             left: 'center',
@@ -517,19 +499,7 @@ export default {
               fontSize: 20
             }
           },
-          //第二行文字
-          //内容 + 位置
-          // {
-          //   type: 'text',
-          //   left: 'center',
-          //   top: '55%',
-          //   style: {
-          //      text: '共' + maxValue + '个',
-          //     textAlign: 'center',
-          //     fill: '#999',
-          //     fontSize: 24
-          //   }
-          // }
+
         ],
         series: [{
           type: 'pie',
@@ -547,7 +517,9 @@ export default {
           itemStyle: {
             normal: {
               shadowBlur: 200,
-              shadowColor: 'rgba(44, 196, 196, 0.8)'
+              // shadowColor: 'rgba(44, 196, 196, 0.8)'
+              shadowColor: '#e4f4f4'
+
             }
           },
           data: [
@@ -589,7 +561,9 @@ export default {
           }
         },
         legend: {},
+
         grid: {
+          height: 130,
           left: '3%',
           right: '4%',
           bottom: '3%',
@@ -640,32 +614,20 @@ export default {
 
 <style lang="less" scoped>
 html * {
-  outline: 1px solid red;
-    font-size: 12px;
-
+  // outline: 1px solid red;
+  font-size: 12px;
 }
-#home {
-  background-color: '#f5f5f5';
-  // padding-bottom: 3rem;
-
-  .head {
-    margin-top: -3rem;
-    width: 100%;
-    background-image: url('http://518taole.7-orange.cn/backImage.png');
-  }
+.timing {
+  font-size: 10px !important;
 }
-
-// .van-divider {
-//   background-color: #f5f5f5;
-//   margin: 0;
-// }
-//
-// .top-wrapper {
-//   width: 100%;
-//   height: 200px;
-//   background-color: rgb(17, 142, 234);
-//   padding-top: 10px;
-// }
+.el-table__header .el-table thead {
+  color: #303133 !important;
+  font-weight: 500;
+}
+.el-table__header {
+  color: #f72929 !important;
+  font-weight: 500;
+}
 
 .groove {
   border-style: groove;
@@ -680,20 +642,16 @@ html * {
   height: 8rem;
 }
 .mainContent2 {
-  height: 9.5rem;
+  height: 9rem;
   width: 100%;
 }
 .bottomContent {
   height: 8rem;
 }
-// .el-table .el-table__cell {
-//   // 间距
-//   padding-top: 4px !important;
-//   padding-bottom: 4px !important;
-// }
-thead{
- background-color: red !important;
- }
+
+thead {
+  background-color: red !important;
+}
 .van-cell {
   padding: 5px 3px !important;
 }
@@ -701,10 +659,10 @@ thead{
 .number {
   text-align: center;
   margin-top: 28px;
-  font-size: 24px !important;
+  font-size: 22px !important;
 }
 .littleT {
-  margin-top:3px;
+  margin-top: 3px;
   text-align: center;
   font-size: 13px !important;
 }
@@ -719,14 +677,20 @@ thead{
   font-size: 1.5rem !important;
   background-color: #c7e6f1 !important;
 }
-.el-table .cell {
+.el-table__header-wrapper thead .el-table .cell {
   line-height: 16px !important;
 }
-.el-table th.el-table__cell>.cell{
-    padding-left: 0px !important;
+.el-table th.el-table__cell > .cell {
+  padding-left: 0px !important;
 }
 
-// .van-cell__title{
-//   width: 100px  !important;
-// }
+.van-divider {
+  margin: 0 0 !important;
+}
+
+.el-table__header-wrapper thead .el-table th.el-table__cell > .cell {
+  color: black !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
 </style>
