@@ -44,3 +44,7 @@
 			finishR: "42%",     
 		  },],
 		}
+
+
+    截取sid：
+    var sid = this.$route.query.sid;// 获取sid
