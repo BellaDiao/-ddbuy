@@ -167,13 +167,11 @@ export default {
   mounted () {
     this.$nextTick(function () {
       $('.ascending').on('click', function () {
-        alert("1")
         this.sortType = 'asc';
         this.initData();
 
       })
       $('.descending').on('click', function () {
-        alert("2")
         this.sortType = 'desc';
         this.initData();
 
@@ -239,22 +237,22 @@ export default {
        * 请求数据
        * */
       // 请求本地假数据：
-      axios
-        .post('http://localhost:3001/homeNum')
+      // axios
+      //   .post('http://localhost:3001/homeNum')
 
-        .then(response => {
-          let dataT = response.data.data
-          this.tableData = dataT.tableData
-          this.finishNum = dataT.finishNum
-          this.unfinishNum = dataT.unfinishNum
-          this.totalhNum = dataT.totalhNum
-          this.barData.xData = dataT.barData.xData
-          this.barData.yData1 = dataT.barData.yData1
-          this.barData.yData2 = dataT.barData.yData2
-          this.finishChart();
-          this.unfinishChart();
-          this.barChart();
-        })
+      //   .then(response => {
+      //     let dataT = response.data.data
+      //     this.tableData = dataT.tableData
+      //     this.finishNum = dataT.finishNum
+      //     this.unfinishNum = dataT.unfinishNum
+      //     this.totalhNum = dataT.totalhNum
+      //     this.barData.xData = dataT.barData.xData
+      //     this.barData.yData1 = dataT.barData.yData1
+      //     this.barData.yData2 = dataT.barData.yData2
+      //     this.finishChart();
+      //     this.unfinishChart();
+      //     this.barChart();
+      //   })
 
 
       // axios.post('/bpm/portal/r/w',{
@@ -272,22 +270,22 @@ export default {
 
       //  正式代码：
 
-      // var sid = this.$route.query.sid;// 获取sid
+      var sid = this.$route.query.sid;// 获取sid
 
-      // axios.post('https://sast.awspaas.com/portal/r/w?sid=' + sid + '&cmd=' + this.cmd + '&searchType=' + this.searchType + '&beginDate=' + this.beginDate + '&endDate=' + this.endDate++ '&sortType=' + this.sortType,
-      // ).then(response => {
-      //   let dataT = response.data.data
-      //   this.tableData = dataT.tableData
-      //   this.finishNum = dataT.finishNum
-      //   this.unfinishNum = dataT.unfinishNum
-      //   this.totalhNum = dataT.totalhNum
-      //   this.barData.xData = dataT.barData.xData
-      //   this.barData.yData1 = dataT.barData.yData1
-      //   this.barData.yData2 = dataT.barData.yData2
-      //   this.finishChart();
-      //   this.unfinishChart();
-      //   this.barChart();
-      // })
+      axios.post('https://sast.awspaas.com/portal/r/w?sid=' + sid + '&cmd=' + this.cmd + '&searchType=' + this.searchType + '&beginDate=' + this.beginDate + '&endDate=' + this.endDate + '&sortType=' + this.sortType,
+      ).then(response => {
+        let dataT = response.data.data
+        this.tableData = dataT.tableData
+        this.finishNum = dataT.finishNum
+        this.unfinishNum = dataT.unfinishNum
+        this.totalhNum = dataT.totalhNum
+        this.barData.xData = dataT.barData.xData
+        this.barData.yData1 = dataT.barData.yData1
+        this.barData.yData2 = dataT.barData.yData2
+        this.finishChart();
+        this.unfinishChart();
+        this.barChart();
+      })
 
     },
 
@@ -583,7 +581,8 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ["有效载荷系统室", "有效载荷事业部", "有效载荷专业室"]
+          data: this.barData.xData
+          // data: ["有效载荷系统室", "有效载荷事业部", "有效载荷专业室"]
         },
         yAxis: {
           type: 'value',
@@ -595,7 +594,17 @@ export default {
             stack: 'total',
             barWidth: 30,
             label: {
-              show: true
+              normal: {
+                show: true,
+                formatter: function (params) {
+                  if (params.value > 0) {
+                    return params.value;
+                  } else {
+                    return '';
+                  }
+                },
+              }
+
             },
             emphasis: {
               focus: 'series'
@@ -607,7 +616,17 @@ export default {
             type: 'bar',
             stack: 'total',
             label: {
-              show: true
+              normal: {
+                show: true,
+                formatter: function (params) {
+                  if (params.value > 0) {
+                    return params.value;
+                  } else {
+                    return '';
+                  }
+                },
+              }
+
             },
             emphasis: {
               focus: 'series'

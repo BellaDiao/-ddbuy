@@ -48,3 +48,19 @@
 
     截取sid：
     var sid = this.$route.query.sid;// 获取sid
+ // axios
+      //   .post('http://localhost:3001/homeNum')
+
+      //   .then(response => {
+      //     let dataT = response.data.data
+      //     this.tableData = dataT.tableData
+      //     this.finishNum = dataT.finishNum
+      //     this.unfinishNum = dataT.unfinishNum
+      //     this.totalhNum = dataT.totalhNum
+      //     this.barData.xData = dataT.barData.xData
+      //     this.barData.yData1 = dataT.barData.yData1
+      //     this.barData.yData2 = dataT.barData.yData2
+      //     this.finishChart();
+      //     this.unfinishChart();
+      //     this.barChart();
+      //   })
