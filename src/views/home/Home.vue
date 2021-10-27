@@ -81,7 +81,6 @@
       >
         <span style="font-size: 16px; font-weight: 300">员工计划完成情况</span>
       </van-divider>
-      <!-- <div class="littleT"></div> -->
       <div class="hello">
         <el-table
           :data="
@@ -94,6 +93,7 @@
           style="width: 100%; padding: 4px 0"
           :row-style="{ height: '0' }"
           :cell-style="{ padding: '0' }"
+          v-on:sort-change="sortChange"
         >
           <el-table-column type="index" width="40" label="序号" align="center">
             <template slot-scope="scope">
@@ -109,7 +109,12 @@
           </el-table-column>
           <el-table-column prop="unfinish" label="未完成" width="50">
           </el-table-column>
-          <el-table-column prop="finishR" label="完成率" width="82" sortable>
+          <el-table-column
+            prop="finishR"
+            label="完成率"
+            width="82"
+            sortable="custom"
+          >
           </el-table-column>
         </el-table>
 
@@ -166,16 +171,7 @@ export default {
   },
   mounted () {
     this.$nextTick(function () {
-      $('.ascending').on('click', function () {
-        this.sortType = 'asc';
-        this.initData();
 
-      })
-      $('.descending').on('click', function () {
-        this.sortType = 'desc';
-        this.initData();
-
-      })
     })
   },
   data () {
@@ -288,7 +284,23 @@ export default {
       })
 
     },
-
+    // table排序
+    sortChange ({ prop, order }) {
+      console.log("order:", order)
+      if (order == 'ascending') {
+        this.sortType = 'asc';
+        // console.log("this.sortType:",this.sortType)
+      }
+      if (order == 'descending') {
+        this.sortType = 'desc';
+        // console.log("this.sortType:",this.sortType)
+      }
+      if (order == '') {
+        this.sortType = '';
+        // console.log("this.sortType:",this.sortType)
+      }
+      this.initData();
+    },
     // ******
     //获取表格序号
     getIndex ($index) {
@@ -596,13 +608,13 @@ export default {
             label: {
               normal: {
                 show: true,
-                formatter: function (params) {
-                  if (params.value > 0) {
-                    return params.value;
-                  } else {
-                    return '';
-                  }
-                },
+                // formatter: function (params) {// 值为0的时候不在柱子上显示
+                //   if (params.value > 0) {
+                //     return params.value;
+                //   } else {
+                //     return '';
+                //   }
+                // },
               }
 
             },
@@ -618,13 +630,13 @@ export default {
             label: {
               normal: {
                 show: true,
-                formatter: function (params) {
-                  if (params.value > 0) {
-                    return params.value;
-                  } else {
-                    return '';
-                  }
-                },
+                // formatter: function (params) {
+                //   if (params.value > 0) {
+                //     return params.value;
+                //   } else {
+                //     return '';
+                //   }
+                // },
               }
 
             },
