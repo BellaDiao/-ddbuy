@@ -223,8 +223,8 @@ export default {
 }
 
 // 
-.el-table th.el-table__cell {
-  font-size: 1.5rem !important;
-  background-color: #c7e6f1 !important;
+.el-table th .el-table__cell {
+  // font-size: 1.5rem !important;
+  // background-color: #c7e6f1 !important;
 }
 </style>

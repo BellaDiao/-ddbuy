@@ -8,6 +8,23 @@
 <template>
   <div id="home">
     <div class="topContent" style="display: flex">
+      <div style="flex: 4">
+        <van-cell
+          title="查询日期"
+          :value="date"
+          @click="show = false"
+          class="title"
+        />
+        <van-calendar
+          class="timing"
+          v-model="show"
+           type="range"
+          @confirm="onConfirm"
+          :show-confirm="false"
+          :min-date="minDate"
+          :max-date="maxDate"
+        />
+      </div>
       <div style="flex: 1">
         <van-cell is-link @click="showPopup" v-model="carmodel">{{
           carmodel
@@ -27,24 +44,6 @@
           />
         </van-popup>
       </div>
-
-      <div style="flex: 6">
-        <van-cell
-          title="选择日期范围"
-          :value="date"
-          @click="show = true"
-          class="title"
-        />
-        <van-calendar
-          class="timing"
-          v-model="show"
-          type="range"
-          @confirm="onConfirm"
-          :show-confirm="false"
-          :min-date="minDate"
-          :max-date="maxDate"
-        />
-      </div>
     </div>
     <div class="mainContent1" style="display: flex">
       <div style="flex: 2" class="groove">
@@ -54,7 +53,7 @@
 
       <div style="flex: 2.5">
         <div style="float: left" class="groove">
-          <div class="littleT">已完成</div>
+          <div class="littleT"><strong>已完成√</strong></div>
           <div
             ref="finishChart"
             style="width: 120px; height: 120px; margin-left: 16px"
@@ -63,7 +62,7 @@
       </div>
       <div style="flex: 2.5">
         <div style="float: left" class="groove">
-          <div class="littleT">未完成</div>
+          <div class="littleT"><strong>未完成×</strong></div>
           <div
             ref="unfinishChart"
             style="width: 120px; height: 120px; margin-left: 16px"
@@ -105,9 +104,9 @@
           </el-table-column>
           <el-table-column prop="psn" label="负责人/分配人" width="65">
           </el-table-column>
-          <el-table-column prop="finish" label="已完成" width="50">
+          <el-table-column prop="finish" label="√" width="50">
           </el-table-column>
-          <el-table-column prop="unfinish" label="未完成" width="50">
+          <el-table-column prop="unfinish" label="×" width="50">
           </el-table-column>
           <el-table-column
             prop="finishR"
@@ -179,8 +178,9 @@ export default {
       data: '',
       date: '',//时间范围
       show: false,//时间范围控件是否显示
+      // readonly: true,
       qukshow: false,//快捷时间查询弹框是否显示
-      carmodel: '至今',
+      carmodel: '查询',
       searchType: '',
       beginDate: '',
       endDate: '',
@@ -190,6 +190,8 @@ export default {
           120000: '当月',
           130000: '当日',
           140000: '当年',
+          150000: '自定义时间',
+
         }
       },
       finishNum: '',
@@ -339,6 +341,12 @@ export default {
           this.date = this.getYearTime();
           this.initData();
           break;
+        case '自定义时间':
+          this.show = true;
+          // this.date = this.getYearTime();
+          this.initData();
+          break;
+
       }
       this.qukshow = false//关闭弹框
     },
@@ -382,7 +390,7 @@ export default {
       let d = date.getDate()
       d = d < 10 ? ('0' + d) : d
       // return `${date.getFullYear()}/1/1-${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-      return `初始日期-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+      return `起始~${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
     },
 
@@ -392,7 +400,7 @@ export default {
     },
     // 
     timeFun (val) {
-      console.log("快捷时间选择")
+      console.log("查询")
     },
     // 日期控件开始
     formatDate (date) {
@@ -550,7 +558,7 @@ export default {
               value: value,
               itemStyle: {
                 normal: {
-                  color: 'red'
+                  color: '#ff0000'
                 }
               }
             },
@@ -593,7 +601,8 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.barData.xData
+          data: this.barData.xData,
+          axisLabel: { interval: 0 }
           // data: ["有效载荷系统室", "有效载荷事业部", "有效载荷专业室"]
         },
         yAxis: {
@@ -616,7 +625,12 @@ export default {
                 //   }
                 // },
               }
-
+            },
+            // 柱子颜色
+            itemStyle: {
+              normal: {
+                color: '#73A0FA'
+              }
             },
             emphasis: {
               focus: 'series'
@@ -640,6 +654,11 @@ export default {
               }
 
             },
+            itemStyle: {
+              normal: {
+                color: '#ff0000'
+              }
+            },
             emphasis: {
               focus: 'series'
             },
@@ -658,7 +677,21 @@ export default {
 <style lang="less" scoped>
 html * {
   // outline: 1px solid red;
-  font-size: 12px;
+  // font-size: 13px;
+}
+.bottomContent {
+  font-size: 14px !important;
+}
+
+.van-cell {
+  font-size: 10px !important;
+}
+.el-table
+  .el-table--fit
+  .el-table--scrollable-x
+  .el-table--enable-row-hover
+  .el-table--enable-row-transition {
+  font-size: 14px !important;
 }
 .timing {
   font-size: 10px !important;
@@ -705,7 +738,7 @@ thead {
   font-size: 22px !important;
 }
 .littleT {
-  margin-top: 3px;
+  margin-top: 10px;
   text-align: center;
   font-size: 13px !important;
 }
