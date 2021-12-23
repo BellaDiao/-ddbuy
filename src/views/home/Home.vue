@@ -9,27 +9,23 @@
   <div id="home">
     <div class="topContent" style="display: flex">
       <div style="flex: 4">
-        <van-cell
-          title="查询日期"
-          :value="date"
-          @click="show = false"
-          class="title"
-        />
+        <van-cell title="" :value="date" @click="show = false" class="title" />
         <van-calendar
           class="timing"
           v-model="show"
-           type="range"
+          type="range"
           @confirm="onConfirm"
           :show-confirm="false"
           :min-date="minDate"
           :max-date="maxDate"
         />
       </div>
-      <div style="flex: 1">
-        <van-cell is-link @click="showPopup" v-model="carmodel">{{
+      <div style="flex: 1" class="">
+        <van-cell is-link @click="showPopup" v-model="carmodel" class="quick">{{
           carmodel
         }}</van-cell>
         <van-popup
+          class=""
           v-model="qukshow"
           position="bottom"
           :style="{ height: '50%' }"
@@ -47,6 +43,7 @@
     </div>
     <div class="mainContent1" style="display: flex">
       <div style="flex: 2" class="groove">
+        <div class="zjh" style="margin-top: 19px;">项目</div>
         <div class="zjh">总数</div>
         <div class="number">{{ totalhNum }}</div>
       </div>
@@ -165,7 +162,7 @@ export default {
 
   created () {
     // 0.数据初始化
-    this.date = this.getTodayTime();//默认查询至今
+    this.date = this.getMonthTime();//默认查询至今
     this.initData();
   },
   mounted () {
@@ -265,12 +262,14 @@ export default {
       //   console.log("shuju:", response)
 
       // })
-
+// https://sast.awspaas.com/portal
       //  正式代码：
-
       var sid = this.$route.query.sid;// 获取sid
-
-      axios.post('https://sast.awspaas.com/portal/r/w?sid=' + sid + '&cmd=' + this.cmd + '&searchType=' + this.searchType + '&beginDate=' + this.beginDate + '&endDate=' + this.endDate + '&sortType=' + this.sortType,
+// var url = window.location.href.substring(0,window.location.href.indexOf("portal/"))+"portal/r/w?sid=" + sid + 
+        // "&cmd=CLIENT_DW_FORM_MODIFYPAGE&bindid=" + bindId + "&processDefId=obj_a98ce763840e4e25a3b5dbbd17c0753a&taskInstId=0";
+// https://sast.awspaas.com/portal/apps/com.awspaas.user.apps.project.dynamics/kb/index.html#/dashboard/home?sid=62d05599-5f8f-4c4d-8e0e-cea541acd9b4
+      axios.post(window.location.href.substring(0,window.location.href.indexOf("portal/"))+'portal/r/w?sid=' + sid + '&cmd=' + this.cmd + '&searchType=' + this.searchType +
+       '&beginDate=' + this.beginDate + '&endDate=' + this.endDate + '&sortType=' + this.sortType,
       ).then(response => {
         let dataT = response.data.data
         this.tableData = dataT.tableData
@@ -281,6 +280,7 @@ export default {
         this.barData.yData1 = dataT.barData.yData1
         this.barData.yData2 = dataT.barData.yData2
         this.finishChart();
+
         this.unfinishChart();
         this.barChart();
       })
@@ -701,7 +701,7 @@ html * {
   font-weight: 500;
 }
 .el-table__header {
-  color: #f72929 !important;
+  // color: #f72929 !important;
   font-weight: 500;
 }
 
@@ -726,15 +726,19 @@ html * {
 }
 
 thead {
-  background-color: red !important;
+  // background-color: red !important;
 }
 .van-cell {
   padding: 5px 3px !important;
 }
-.zjh,
+.zjh{
+  text-align: center;
+  // margin-top: 19px;
+  font-size: 22px !important;
+}
 .number {
   text-align: center;
-  margin-top: 28px;
+  margin-top: 19px;
   font-size: 22px !important;
 }
 .littleT {
@@ -747,6 +751,8 @@ thead {
   padding-right: 0px !important;
 }
 .van-cell__value {
+  // margin-left: 10px !important;
+
   text-align: left !important;
 }
 .el-table th.el-table__cell {
@@ -768,5 +774,12 @@ thead {
   color: black !important;
   padding-left: 0px !important;
   padding-right: 0px !important;
+}
+.quick {
+  border: 1px solid white !important;
+  border-radius: 5px;
+  font-size: 14px !important;
+  color: brown !important;
+  background-color: rgb(17, 164, 223) !important;
 }
 </style>
