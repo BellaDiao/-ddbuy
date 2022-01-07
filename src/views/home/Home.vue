@@ -8,7 +8,16 @@
 <template>
   <div id="home">
     <div class="topContent" style="display: flex">
-      <div style="flex: 4">
+      <div style="flex: 3">
+        <van-dropdown-menu style="font-size: 10px; height: 24px">
+          <van-dropdown-item
+            v-model="value1"
+            :options="deptOption"
+            @change="deptChange()"
+          />
+        </van-dropdown-menu>
+      </div>
+      <div class="time" style="flex: 4; height: 48px">
         <van-cell title="" :value="date" @click="show = false" class="title" />
         <van-calendar
           class="timing"
@@ -20,7 +29,7 @@
           :max-date="maxDate"
         />
       </div>
-      <div style="flex: 1" class="">
+      <div style="flex: 2" class="">
         <van-cell is-link @click="showPopup" v-model="carmodel" class="quick">{{
           carmodel
         }}</van-cell>
@@ -41,9 +50,9 @@
         </van-popup>
       </div>
     </div>
-    <div class="mainContent1" style="display: flex">
+    <div class="mainContent1" style="display: flex; margin-top: 16px">
       <div style="flex: 2" class="groove">
-        <div class="zjh" style="margin-top: 19px;">项目</div>
+        <div class="zjh" style="margin-top: 19px">项目</div>
         <div class="zjh">总数</div>
         <div class="number">{{ totalhNum }}</div>
       </div>
@@ -67,7 +76,6 @@
         </div>
       </div>
     </div>
-
     <div class="mainContent2">
       <div ref="barChart" style="height: 150px"></div>
     </div>
@@ -138,6 +146,8 @@ import Vue from 'vue';
 import { Area, Popup } from 'vant';
 import { Calendar } from 'vant';
 import { Cell, CellGroup } from 'vant';
+import { DropdownMenu, DropdownItem } from 'vant';
+
 import * as echarts from 'echarts';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -151,6 +161,8 @@ Vue.use(Area);
 Vue.use(Popup);
 
 Vue.use(Calendar);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
 Vue.use(ElementUI);
 const optionsItem = ['50', '100'];
 
@@ -207,6 +219,32 @@ export default {
       minDate: new Date(new Date().setFullYear(new Date().getFullYear() - 2)),
       maxDate: new Date(new Date().setFullYear(new Date().getFullYear() + 2)),
       sortType: '',
+      data: "",
+      value1: "0",
+      deptOption: [
+      //   {
+      //     text: "所有部门",
+      //     value: "0"
+      //   }, {
+      //     text: "有效载荷事业部",
+      //     value: "a38ccaaf-d1dc-4366-8c81-9b7a804ea122"
+      //   }, {
+      //     text: "有效载荷系统室",
+      //     value: "91014634-9a5e-40fc-b84b-d231efb86fb9"
+      //   }, {
+      //     text: "有效载荷专业室",
+      //     value: "f72c6e65-e22b-4542-a538-0ae6c34e47a1"
+      //   }, {
+      //     text: "运载事业部",
+      //     value: "b820bcfd-133f-47ee-8692-a066e86e041e"
+      //   }, {
+      //     text: "测发控系统室",
+      //     value: "4dd65826-17ba-4806-ba8a-75fc7282c198"
+      //   }, {
+      //     text: "箭载电子室",
+      //     value: "604ca942-0530-4e0b-8b60-9f9a283d8ff1"
+      //   }
+      ]
 
     }
   },
@@ -223,6 +261,7 @@ export default {
   // },
   methods: {
 
+
     // Vuex中的方法
     ...mapMutations(['ADD_GOODS', 'ADD_TO_CART']),
     // 数据初始化
@@ -230,11 +269,11 @@ export default {
 
       /**
        * 请求数据
+       * 请求本地假数据：
        * */
-      // 请求本地假数据：
+
       // axios
       //   .post('http://localhost:3001/homeNum')
-
       //   .then(response => {
       //     let dataT = response.data.data
       //     this.tableData = dataT.tableData
@@ -250,40 +289,90 @@ export default {
       //   })
 
 
-      // axios.post('/bpm/portal/r/w',{
-      //     searchType: 'nowYear',
-      //     beginDate: '2021-01-01',
-      //     endDate: '2021-10-14',
-      //     sid: '3fec0ea5-db8b-432f-a0cd-c1123038adef',
-      //     cmd: 'com.awspaas.user.apps.project.dynamics.getReportInfo'
-      //   },
-      //   {contentType: 'application/json',}
-      // ).then(response => {
-      //   console.log("shuju:", response)
-
-      // })
-// https://sast.awspaas.com/portal
       //  正式代码：
+      // https://sast.awspaas.com/portal
       var sid = this.$route.query.sid;// 获取sid
-// var url = window.location.href.substring(0,window.location.href.indexOf("portal/"))+"portal/r/w?sid=" + sid + 
-        // "&cmd=CLIENT_DW_FORM_MODIFYPAGE&bindid=" + bindId + "&processDefId=obj_a98ce763840e4e25a3b5dbbd17c0753a&taskInstId=0";
-// https://sast.awspaas.com/portal/apps/com.awspaas.user.apps.project.dynamics/kb/index.html#/dashboard/home?sid=62d05599-5f8f-4c4d-8e0e-cea541acd9b4
-      axios.post(window.location.href.substring(0,window.location.href.indexOf("portal/"))+'portal/r/w?sid=' + sid + '&cmd=' + this.cmd + '&searchType=' + this.searchType +
-       '&beginDate=' + this.beginDate + '&endDate=' + this.endDate + '&sortType=' + this.sortType,
-      ).then(response => {
-        let dataT = response.data.data
-        this.tableData = dataT.tableData
-        this.finishNum = dataT.finishNum
-        this.unfinishNum = dataT.unfinishNum
-        this.totalhNum = dataT.totalhNum
-        this.barData.xData = dataT.barData.xData
-        this.barData.yData1 = dataT.barData.yData1
-        this.barData.yData2 = dataT.barData.yData2
-        this.finishChart();
 
-        this.unfinishChart();
-        this.barChart();
-      })
+      if (this.value1 == "0" || this.value1 == 0) {
+        axios.post(window.location.href.substring(0, window.location.href.indexOf("portal/")) + 'portal/r/w?sid=' + sid +
+          '&cmd=' + this.cmd + '&searchType=' + this.searchType +
+          '&beginDate=' + this.beginDate + '&endDate=' + this.endDate + '&sortType=' + this.sortType + '&queryDeptId=',
+        ).then(response => {
+          let dataT = response.data.data
+
+          this.deptOption = dataT.deptList
+
+          this.tableData = dataT.tableData
+          this.finishNum = dataT.finishNum
+          this.unfinishNum = dataT.unfinishNum
+          this.totalhNum = dataT.totalhNum
+          this.barData.xData = dataT.barData.xData
+          this.barData.yData1 = dataT.barData.yData1
+          this.barData.yData2 = dataT.barData.yData2
+          this.finishChart();
+
+          this.unfinishChart();
+          this.barChart();
+        })
+      } else {
+        axios.post(window.location.href.substring(0, window.location.href.indexOf("portal/")) + 'portal/r/w?sid=' + sid +
+          '&cmd=' + this.cmd + '&searchType=' + this.searchType +
+          '&beginDate=' + this.beginDate + '&endDate=' + this.endDate + '&sortType=' + this.sortType + '&queryDeptId=' + this.value1,
+        ).then(response => {
+          let dataT = response.data.data
+
+          this.deptOption = dataT.deptList
+
+          this.tableData = dataT.tableData
+          this.finishNum = dataT.finishNum
+          this.unfinishNum = dataT.unfinishNum
+          this.totalhNum = dataT.totalhNum
+          this.barData.xData = dataT.barData.xData
+          this.barData.yData1 = dataT.barData.yData1
+          this.barData.yData2 = dataT.barData.yData2
+          this.finishChart();
+
+          this.unfinishChart();
+          this.barChart();
+        })
+      }
+
+
+
+      /**
+       
+       "deptList": [{
+         "deptName": "有效载荷事业部",
+         "deptId": "a38ccaaf-d1dc-4366-8c81-9b7a804ea122"
+        }, {
+         "deptName": "有效载荷系统室",
+         "deptId": "91014634-9a5e-40fc-b84b-d231efb86fb9"
+        }, {
+         "deptName": "有效载荷专业室",
+         "deptId": "f72c6e65-e22b-4542-a538-0ae6c34e47a1"
+        }, {
+         "deptName": "运载事业部",
+         "deptId": "b820bcfd-133f-47ee-8692-a066e86e041e"
+        }, {
+         "deptName": "测发控系统室",
+         "deptId": "4dd65826-17ba-4806-ba8a-75fc7282c198"
+        }, {
+         "deptName": "箭载电子室",
+         "deptId": "604ca942-0530-4e0b-8b60-9f9a283d8ff1"
+        }],
+      
+        // var url = window.location.href.substring(0,window.location.href.indexOf("portal/"))+"portal/r/w?sid=" + sid + 
+      // "&cmd=CLIENT_DW_FORM_MODIFYPAGE&bindid=" + bindId + "&processDefId=obj_a98ce763840e4e25a3b5dbbd17c0753a&taskInstId=0";
+      // https://sast.awspaas.com/portal/apps/com.awspaas.user.apps.project.dynamics/kb/index.html#/dashboard/home?sid=62d05599-5f8f-4c4d-8e0e-cea541acd9b4
+
+      
+       * **/
+    },
+    deptChange () {
+      // var object =  { text: '全部1', value: 10 }
+      // this.deptOption.unshift(object);
+      // alert(this.deptOption)
+      // console.log(this.value1)
 
     },
     // table排序
@@ -679,10 +768,13 @@ html * {
   // outline: 1px solid red;
   // font-size: 13px;
 }
-.bottomContent {
-  font-size: 14px !important;
-}
+// .topContent :first-child {
+//   height: 40px !important;
+// }
 
+// .topContent .van-dropdown-menu .van-dropdown-menu__bar{
+//     height: 35px !important;
+// }
 .van-cell {
   font-size: 10px !important;
 }
@@ -691,7 +783,7 @@ html * {
   .el-table--scrollable-x
   .el-table--enable-row-hover
   .el-table--enable-row-transition {
-  font-size: 14px !important;
+  font-size: 15px !important;
 }
 .timing {
   font-size: 10px !important;
@@ -701,7 +793,6 @@ html * {
   font-weight: 500;
 }
 .el-table__header {
-  // color: #f72929 !important;
   font-weight: 500;
 }
 
@@ -716,6 +807,7 @@ html * {
 }
 .mainContent1 {
   height: 8rem;
+  // margin-top: 25 px;
 }
 .mainContent2 {
   height: 9rem;
@@ -725,13 +817,10 @@ html * {
   height: 8rem;
 }
 
-thead {
-  // background-color: red !important;
-}
 .van-cell {
   padding: 5px 3px !important;
 }
-.zjh{
+.zjh {
   text-align: center;
   // margin-top: 19px;
   font-size: 22px !important;
@@ -751,8 +840,6 @@ thead {
   padding-right: 0px !important;
 }
 .van-cell__value {
-  // margin-left: 10px !important;
-
   text-align: left !important;
 }
 .el-table th.el-table__cell {
@@ -781,5 +868,11 @@ thead {
   font-size: 14px !important;
   color: brown !important;
   background-color: rgb(17, 164, 223) !important;
+}
+// 日历
+.van-cell__title {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 0.1 !important;
 }
 </style>
